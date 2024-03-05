@@ -1,0 +1,59 @@
+import cv2
+from PIL import Image
+import numpy as np
+
+'''
+In this file, a 24-bit color image is selected from the disk, read, and displayed. Then, information about the image, including the file name, file format, color depth, etc., is printed, and the three RGB channels for the selected image are shown as three separate images.
+Then, the image dimensions are reduced by 50% and the resulting image is displayed.
+The color image is converted to a grayscale image and displayed.
+The color image is converted to an indexed image with 16 colors, and the new image along with the color table elements are displayed.
+The complement of the color image is displayed, and then the sum and difference of the color image and its complement are calculated and displayed.
+'''
+#Read and display an image from disk
+image_path = '/home/hemetaf/abarkelas/parrots24bits.jpeg'
+image = cv2.imread(image_path)
+cv2.imshow('Original Image', image)
+cv2.waitKey(0)
+
+#Print image information
+print(f'File name: {image_path.split("/")[-1]}')
+print(f'Format: {image_path.split(".")[-1]}')
+print(f'Color depth: {image.dtype}')
+print(f'Dimensions: {image.shape[0]}x{image.shape[1]} pixels')
+
+#Separate and display the R, G, B color channels
+B, G, R = cv2.split(image)
+cv2.imshow('Blue Channel', B)
+cv2.imshow('Green Channel', G)
+cv2.imshow('Red Channel', R)
+cv2.waitKey(0)
+
+#Resize the image to 50%
+resized_image = cv2.resize(image, (0, 0), fx=0.5, fy=0.5)
+cv2.imshow('Resized Image', resized_image)
+cv2.waitKey(0)
+
+#Convert the colored image to grayscale and display it
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+cv2.imshow('Grayscale Image', gray_image)
+cv2.waitKey(0)
+
+#Convert the colored image to a 16-color indexed image
+pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+pil_image = pil_image.quantize(colors=16)
+indexed_image = np.array(pil_image)
+indexed_image = cv2.cvtColor(indexed_image, cv2.COLOR_RGB2BGR)
+cv2.imshow('16-color Indexed Image', indexed_image)
+cv2.waitKey(0)
+
+# Display color table (palette)
+color_table = pil_image.getpalette()
+print('Color table:', color_table[:16*3])  
+
+#Display the complementary (negative) of the colored image
+complementary_image = cv2.bitwise_not(image)
+cv2.imshow('Complementary Image', complementary_image)
+cv2.waitKey(0)
+
+# Remember to destroy all windows once done
+cv2.destroyAllWindows()
