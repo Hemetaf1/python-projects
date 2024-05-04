@@ -14,3 +14,4 @@ class B707(Airplane):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
+#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
